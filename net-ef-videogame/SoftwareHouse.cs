@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -10,25 +11,36 @@ namespace net_ef_videogame
     [Table("Software_house")]
     internal class SoftwareHouse
     {
+        [Key]
+        [Column("id")]
         public long Id { get; set; }
+
+        [Column("name")]
+        [StringLength(255)]
         public string Name { get; set; }
+
+        [Column("tax_id")]
+        [StringLength(255)]
         public string Tax_id { get; set; }
+
+        [Column("city")]
+        [StringLength(255)]
         public string City { get; set; }
+
+        [Column("country")]
+        [StringLength(255)]
         public string Country { get; set; } 
-        public string? Created_at { get; set; }  
-        public string? Update_at { get; set; }
 
         public List<Videogame> Videogames { get; set; }
 
-        public SoftwareHouse(long id, string name, string tax_id, string city, string country, string created_at, string update_at)
+        public SoftwareHouse(long id, string name, string tax_id, string city, string country, List<Videogame> videogames)
         {
             Id = id;
             Name = name;
             Tax_id = tax_id;
             City = city;
             Country = country;
-            Created_at = created_at;
-            Update_at = update_at;
+            Videogames = videogames;
         }
     }
 }
