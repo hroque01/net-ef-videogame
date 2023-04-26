@@ -3,101 +3,85 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace net_ef_videogame
 {
     internal class VideogameManager
     {
-        public void InserisciVideogame(Videogame videogame)
+        public static void InsertVideogame()
         {
-            //istanzio l'using
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using VideogameContext db = new VideogameContext();
+            
+            string name;
+            string overview;
+            DateTime release_date;
+            int software_house_id;
+            string input;
+
+
+            do
             {
-                try
-                {
-                    conn.Open();
-                    var sql = @"INSERT INTO videogames (name, overview, release_date, software_house_id) " +
-                                "OUTPUT INSERTED.ID " +
-                                "VALUES (@Name, @Overview, @Release_date, @Software_house_id)";
+                Console.Write("Inserisci il nome: ");
+                name = Console.ReadLine();
 
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@Name", videogame.Name);
-                        cmd.Parameters.AddWithValue("@Overview", videogame.Overview);
-                        cmd.Parameters.AddWithValue("@Release_date", videogame.Release_date);
-                        cmd.Parameters.AddWithValue("@Software_house_id", videogame.Software_house_id);
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+            } while (string.IsNullOrEmpty(name));
 
-            }
-        }
-        public Videogame GetVideogameId(int id)
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            do
             {
-                try
-                {
-                    conn.Open();
-                    var sql = @"SELECT * FROM videogames WHERE id = @Id";
+                Console.Write("Inserisci la descrizione: ");
+                overview = Console.ReadLine();
 
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@Id", id);
+            } while (string.IsNullOrEmpty(overview));
 
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                string name = reader.GetString(reader.GetOrdinal("name"));
-                                string overview = reader.GetString(reader.GetOrdinal("overview"));
-                                DateTime releaseDate = reader.GetDateTime(reader.GetOrdinal("release_date"));
-                                long softwareHouseId = reader.GetInt64(reader.GetOrdinal("software_house_id"));
+            do
+            {
+                Console.Write("Inserisci la data di uscita (formato yyyy-MM-dd): ");
+                input = Console.ReadLine();
+            } while (!DateTime.TryParse(input, out release_date));
 
-                                return new Videogame(name, overview, releaseDate, softwareHouseId);
-                            }
-                            else
-                            {
-                                throw new Exception("Videogame non trovato.");
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    return null;
-                }
+            var SoftwareHouse = db.SoftwareHouse.ToList();
+
+            foreach (var aviable in SoftwareHouse)
+            {
+                Console.WriteLine($"{aviable.Id} - {aviable.Name}");
             }
+
+
+            do
+            {
+                Console.Write("Inserisci l'ID della software house: ");
+                input = Console.ReadLine();
+            } while (!int.TryParse(input, out software_house_id));
+
         }
 
-        public void GetVideogamesName(string name)
+        public static void GetVideogameById()
         {
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (var context = new VideogameContext())
             {
                 try
                 {
-                    conn.Open();
+                    int id;
 
-                    var sql = "SELECT * FROM videogames WHERE name like '%' + @name + '%'";
-
-                    SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.Add(new SqlParameter("@name", name));
-
-                    using SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    do
                     {
-                        while (reader.Read())
-                        {
-                            Console.WriteLine(reader["name"]);
-                        }
-                    }
+                        Console.Write("Inserisci l'ID del videogioco: ");
+                    } while (!int.TryParse(Console.ReadLine(), out id));
 
+                    var videogame = context.Videogames.Find(id);
+
+                    if (videogame != null)
+                    {
+                        Console.WriteLine($"Nome: {videogame.Name}");
+                        Console.WriteLine($"Panoramica: {videogame.Overview}");
+                        Console.WriteLine($"Data di rilascio: {videogame.Release_date}");
+                        Console.WriteLine($"ID software house: {videogame.Software_house_id}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Videogame non trovato.");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -105,39 +89,119 @@ namespace net_ef_videogame
                 }
             }
         }
-
-        public void DeleteGame(int id)
+        public static void GetVideogamesName()
         {
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (var context = new VideogameContext())
             {
                 try
                 {
-                    conn.Open();
+                    string input;
 
-                    string sql = "DELETE FROM videogames WHERE id = @id";
-
-                    SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.Add(new SqlParameter("@id", id));
-
-                    int videogameRaw = cmd.ExecuteNonQuery();
-
-                    if (videogameRaw == 1)
+                    do
                     {
+                        Console.Write("Inserisci il nome (o parte del nome) del videogioco: ");
+                        input = Console.ReadLine();
+                    } while (string.IsNullOrEmpty(input));
+
+                    var videogames = context.Videogames
+                        .Where(v => v.Name.Contains(input))
+                        .ToList();
+
+                    foreach (var videogame in videogames)
+                    {
+                        Console.WriteLine(videogame.Name);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        public static void DeleteGame()
+        {
+            using (var context = new VideogameContext())
+            {
+                try
+                {
+                    long id;
+
+                    do
+                    {
+                        Console.Write("Inserisci l'ID del videogioco da eliminare: ");
+                    } while (!long.TryParse(Console.ReadLine(), out id));
+
+                    var videogameToDelete = context.Videogames.Find(id);
+
+                    if (videogameToDelete != null)
+                    {
+                        context.Videogames.Remove(videogameToDelete);
+                        context.SaveChanges();
                         Console.WriteLine("Dato Eliminato!");
                     }
                     else
                     {
                         Console.WriteLine("Dato non eliminato!");
                     }
-
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
-
             }
         }
+
+        public static void CreateSoftwareHouse()
+        {
+            using (VideogameContext db = new VideogameContext())
+            {
+                string name;
+                string taxId;
+                string city;
+                string country;
+                string input;
+
+                do
+                {
+                    Console.Write("Inserisci il nome della software house: ");
+                    name = Console.ReadLine();
+                } while (string.IsNullOrEmpty(name));
+
+                do
+                {
+                    Console.Write("Inserisci il tax ID della software house: ");
+                    taxId = Console.ReadLine();
+                } while (string.IsNullOrEmpty(taxId));
+
+                do
+                {
+                    Console.Write("Inserisci la città della software house: ");
+                    city = Console.ReadLine();
+                } while (string.IsNullOrEmpty(city));
+
+                do
+                {
+                    Console.Write("Inserisci il paese della software house: ");
+                    country = Console.ReadLine();
+                } while (string.IsNullOrEmpty(country));
+
+                SoftwareHouse softwareHouse = new SoftwareHouse
+                {
+                    Name = name,
+                    Tax_id = taxId,
+                    City = city,
+                    Country = country
+                };
+
+                db.SoftwareHouse.Add(softwareHouse);
+                db.SaveChanges();
+
+                Console.WriteLine("Software house creata con successo!");
+            }
+        }
+
+
     }
 }
+

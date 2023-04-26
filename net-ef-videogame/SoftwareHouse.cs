@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks;      
 
 namespace net_ef_videogame
 {
@@ -33,14 +33,5 @@ namespace net_ef_videogame
 
         public List<Videogame> Videogames { get; set; }
 
-        public SoftwareHouse(long id, string name, string tax_id, string city, string country, List<Videogame> videogames)
-        {
-            Id = id;
-            Name = name;
-            Tax_id = tax_id;
-            City = city;
-            Country = country;
-            Videogames = videogames;
-        }
     }
 }

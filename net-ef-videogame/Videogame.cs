@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace net_ef_videogame
 {
     [Table("Videogames")]
@@ -26,19 +27,19 @@ namespace net_ef_videogame
         [Column("release_date")]
         public DateTime Release_date { get; set; }
 
-        [ForeignKey("software_house")]
+        [ForeignKey("SoftwareHouse")]
         [Column("software_house_id")]
         public long Software_house_id { get; set; }
         public SoftwareHouse SoftwareHouse { get; set; }
 
-        public Videogame(long id, string name, string overview, DateTime release_date, long software_house_id, SoftwareHouse softwareHouse)
+        public void Print()
         {
-            Id = id;
-            Name = name;
-            Overview = overview;
-            Release_date = release_date;
-            Software_house_id = software_house_id;
-            SoftwareHouse = softwareHouse;
+            Console.WriteLine($"ID: {Id}");
+            Console.WriteLine($"Name: {Name}");
+            Console.WriteLine($"Overview: {Overview}");
+            Console.WriteLine($"Release Date: {Release_date:dd/MM/yyyy}");
+            Console.WriteLine($"Software House: {Software_house_id}");
         }
+
     }
 }
