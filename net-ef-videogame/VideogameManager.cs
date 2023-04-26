@@ -54,12 +54,18 @@ namespace net_ef_videogame
                 input = Console.ReadLine();
             } while (!long.TryParse(input, out software_house_id));
 
-            var videogame = new Videogame(name, overview, release_date, software_house_id);
+            // Create a new VideoGame object and set its properties
+            var videogame = new VideoGame
+            {
+                Name = name,
+                Overview = overview,
+                ReleaseDate = release_date,
+                SoftwareHouseId = software_house_id
+            };
 
-            db.Videogames.Add(videogame);
+            // Add the new VideoGame object to the database
+            db.VideoGames.Add(videogame);
             db.SaveChanges();
-
-            Console.WriteLine("Videogioco salvato nel database.");
 
         }
 
@@ -209,6 +215,14 @@ namespace net_ef_videogame
         }
 
 
+    }
+
+    internal class VideoGame
+    {
+        public string Name { get; set; }
+        public string Overview { get; set; }
+        public DateTime ReleaseDate { get; set; }
+        public long SoftwareHouseId { get; set; }
     }
 }
 

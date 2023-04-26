@@ -22,7 +22,7 @@ namespace net_ef_videogame
 
         [Key]
         [Column("id")]
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         [Column("name")]
         [StringLength(250)]
@@ -36,17 +36,9 @@ namespace net_ef_videogame
 
         [ForeignKey("SoftwareHouse")]
         [Column("software_house_id")]
-        public long Software_house_id { get; set; }
+        public int Software_house_id { get; set; }
         public SoftwareHouse SoftwareHouse { get; set; }
 
-        public Videogame(long id, string name, string overview, DateTime release_date, long software_house_id)
-        {
-            Id = id;
-            Name = name;
-            Overview = overview;
-            Release_date = release_date;
-            Software_house_id = software_house_id;
-        }
 
         public void Print()
         {

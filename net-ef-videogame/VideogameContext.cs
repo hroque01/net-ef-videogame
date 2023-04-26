@@ -10,6 +10,8 @@ namespace net_ef_videogame
 {
     internal class VideogameContext : DbContext
     {
+        internal object VideoGames;
+
         public DbSet<Videogame> Videogames { get; set; }
         public DbSet<SoftwareHouse> SoftwareHouse { get; set; }
 
