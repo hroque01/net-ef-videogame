@@ -13,7 +13,7 @@ namespace net_ef_videogame
     {
         [Key]
         [Column("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Column("name")]
         [StringLength(255)]

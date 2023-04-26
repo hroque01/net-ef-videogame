@@ -12,17 +12,10 @@ namespace net_ef_videogame
     [Table("Videogames")]
     internal class Videogame
     {
-        public Videogame(string name, string overview, DateTime release_date, int software_house_id)
-        {
-            Name = name;
-            Overview = overview;
-            Release_date = release_date;
-            Software_house_id = software_house_id;
-        }
 
         [Key]
         [Column("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [Column("name")]
         [StringLength(250)]
@@ -36,7 +29,7 @@ namespace net_ef_videogame
 
         [ForeignKey("SoftwareHouse")]
         [Column("software_house_id")]
-        public int Software_house_id { get; set; }
+        public long Software_house_id { get; set; }
         public SoftwareHouse SoftwareHouse { get; set; }
 
 

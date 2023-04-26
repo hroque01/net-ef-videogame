@@ -54,19 +54,16 @@ namespace net_ef_videogame
                 input = Console.ReadLine();
             } while (!long.TryParse(input, out software_house_id));
 
-            // Create a new VideoGame object and set its properties
-            var videogame = new VideoGame
+            var videogame = new Videogame
             {
                 Name = name,
                 Overview = overview,
-                ReleaseDate = release_date,
-                SoftwareHouseId = software_house_id
+                Release_date = release_date,
+                Software_house_id = software_house_id
             };
 
-            // Add the new VideoGame object to the database
-            db.VideoGames.Add(videogame);
+            db.Videogames.Add(videogame);
             db.SaveChanges();
-
         }
 
         public static void GetVideogameById()
@@ -75,12 +72,12 @@ namespace net_ef_videogame
             {
                 try
                 {
-                    int id;
+                    long id;
 
                     do
                     {
                         Console.Write("Inserisci l'ID del videogioco: ");
-                    } while (!int.TryParse(Console.ReadLine(), out id));
+                    } while (!long.TryParse(Console.ReadLine(), out id));
 
                     var videogame = context.Videogames.Find(id);
 
