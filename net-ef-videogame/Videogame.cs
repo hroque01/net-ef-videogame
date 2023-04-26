@@ -12,6 +12,13 @@ namespace net_ef_videogame
     [Table("Videogames")]
     internal class Videogame
     {
+        public Videogame(string name, string overview, DateTime release_date, int software_house_id)
+        {
+            Name = name;
+            Overview = overview;
+            Release_date = release_date;
+            Software_house_id = software_house_id;
+        }
 
         [Key]
         [Column("id")]
@@ -31,6 +38,15 @@ namespace net_ef_videogame
         [Column("software_house_id")]
         public long Software_house_id { get; set; }
         public SoftwareHouse SoftwareHouse { get; set; }
+
+        public Videogame(long id, string name, string overview, DateTime release_date, long software_house_id)
+        {
+            Id = id;
+            Name = name;
+            Overview = overview;
+            Release_date = release_date;
+            Software_house_id = software_house_id;
+        }
 
         public void Print()
         {

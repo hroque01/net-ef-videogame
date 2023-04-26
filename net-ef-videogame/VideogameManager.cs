@@ -16,7 +16,7 @@ namespace net_ef_videogame
             string name;
             string overview;
             DateTime release_date;
-            int software_house_id;
+            long software_house_id;
             string input;
 
 
@@ -52,7 +52,14 @@ namespace net_ef_videogame
             {
                 Console.Write("Inserisci l'ID della software house: ");
                 input = Console.ReadLine();
-            } while (!int.TryParse(input, out software_house_id));
+            } while (!long.TryParse(input, out software_house_id));
+
+            var videogame = new Videogame(name, overview, release_date, software_house_id);
+
+            db.Videogames.Add(videogame);
+            db.SaveChanges();
+
+            Console.WriteLine("Videogioco salvato nel database.");
 
         }
 
